@@ -1,9 +1,33 @@
+use rfd::FileDialog;
+use std::fs::File;
+use std::io::prelude::*;
+
 mod instruction;
 mod machine;
-
+mod assembler;
 
 fn main() {
-    let code: [instruction::Instruction; 9] = [
+    let path = FileDialog::new().pick_file().unwrap();
+
+    let display = path.display();
+
+    // Open the path in read-only mode, returns `io::Result<File>`
+    let mut file = match File::open(&path) {
+        Err(why) => panic!("couldn't open {}: {}", display, why),
+        Ok(file) => file,
+    };
+
+    // Read the file contents into a string, returns `io::Result<usize>`
+    let mut asm = String::new();
+    match file.read_to_string(&mut asm) {
+        Err(why) => panic!("couldn't read {}: {}", display, why),
+        Ok(_) => print!("{} contains:\n{}", display, asm),
+    }
+
+    let mut assembler = assembler::Assembler::new(asm);
+    assembler.assemble();
+
+    /*let code: [instruction::Instruction; 9] = [
         //Loop
         instruction::Instruction::from_string("ldb R1 N100".to_string()).unwrap(),
         instruction::Instruction::from_string("add R1 N1".to_string()).unwrap(),
@@ -14,12 +38,10 @@ fn main() {
         instruction::Instruction::from_string("mov R3 N1".to_string()).unwrap(),
         instruction::Instruction::from_string("stb R1 N100".to_string()).unwrap(),
         instruction::Instruction::from_string("halt".to_string()).unwrap(),
-    ];
+    ];*/
 
-    let mut binary: Vec<u8> = vec![];
+    let binary: Vec<u8> = assembler.output;
 
-
-    code.map(|instruction| binary.append(&mut instruction.to_binary()));
     println!("{:?}", binary);
 
     let mut machine = machine::machine::Machine::new();
