@@ -6,7 +6,6 @@ use std::time::Instant;
 impl Machine {
 
     pub fn execute(&mut self, herz: Option<u32>){
-        let mut i = 0;
         let start_time = Instant::now();
         while self.flags & 0x4000_0000 <= 1  {
             self.execute_line(herz);
@@ -62,8 +61,8 @@ impl Machine {
         }
 
         if let Some(herz) = herz {
-            let waitTimeS = 1. / (herz as f32) * ticks as f32;
-            let mut command = Command::new("sleep").arg(waitTimeS.to_string()).spawn().unwrap();
+            let wait_time_s = 1. / (herz as f32) * ticks as f32;
+            let mut command = Command::new("sleep").arg(wait_time_s.to_string()).spawn().unwrap();
             let _result = command.wait().unwrap();
         }
 

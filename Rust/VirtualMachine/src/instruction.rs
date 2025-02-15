@@ -1,5 +1,3 @@
-use std::ascii::AsciiExt;
-
 #[derive(Copy)]
 pub struct Instruction{
     task: u8,
@@ -106,17 +104,17 @@ impl Instruction{
 
 
     // Returns number of arguments and the name of the instruction
-    pub fn name_of_instruction(task: u8, arg_1: u8, arg_2: u8) -> Option<(String)>{
+    pub fn name_of_instruction(task: u8, arg_1: u8, arg_2: u8) -> Option<String>{
         let arg_1 = if arg_1 >= 128 { format!("R{:02} ", arg_1 - 128) } else { format!("N{:02} ", arg_1) };
         let arg_1_text = arg_1.as_str();
         let arg_2 = if arg_2 >= 128 { format!("R{:02}", arg_2 - 128) } else { format!("N{:02}", arg_2) };
         let arg_2_text = arg_2.as_ref();
         match task{
-            ADD_INSTRUCTION => Some(("add ".to_string() + arg_1_text + arg_2_text)),
-            SUB_INSTRUCTION => Some(("sub ".to_string() + arg_1_text + arg_2_text)),
-            MUL_INSTRUCTION => Some(("mul ".to_string() + arg_1_text + arg_2_text)),
-            DIV_INSTRUCTION => Some(("div ".to_string() + arg_1_text + arg_2_text)),
-            MOD_INSTRUCTION => Some(("mod ".to_string() + arg_1_text + arg_2_text)),
+            ADD_INSTRUCTION => Some("add ".to_string() + arg_1_text + arg_2_text),
+            SUB_INSTRUCTION => Some("sub ".to_string() + arg_1_text + arg_2_text),
+            MUL_INSTRUCTION => Some("mul ".to_string() + arg_1_text + arg_2_text),
+            DIV_INSTRUCTION => Some("div ".to_string() + arg_1_text + arg_2_text),
+            MOD_INSTRUCTION => Some("mod ".to_string() + arg_1_text + arg_2_text),
             HALT_INSTRUCTION => Some("halt ".to_string()),
             MOVE_INSTRUCTION => Some("mov ".to_string() + arg_1_text + arg_2_text),
             JUMP_INSTRUCTION => Some("jmp ".to_string() + arg_2_text),

@@ -1,4 +1,3 @@
-use crate::instruction;
 pub struct Machine {
     pub memory: [u8; 4096],
     pub general_registers: [i32; 16-4],
@@ -13,7 +12,6 @@ impl Machine {
     pub fn new() -> Machine {
         let memory: [u8; 4096] = [0; 4096];
         let general_registers: [i32; 12] = [0; 12];
-        let zero_register: i32 = 0;
         Machine{memory, general_registers, flags: 0, stack_pointer: 0, frame_pointer: 0, execution_pointer: 0}
     }
 
@@ -24,7 +22,7 @@ impl Machine {
     }
 
     pub fn data_of_register_by_value(&mut self, register: u8) -> i32 {
-        if register < 0 || register > 15 { panic!() }
+        if register > 15 { panic!() }
         match register {
             12 => self.flags as i32,
             13 => self.stack_pointer as i32,
@@ -35,7 +33,7 @@ impl Machine {
     }
 
     pub fn set_data_of_register(&mut self, register: u8, value: i32) {
-        if register < 0 || register > 15 { panic!() }
+        if register > 15 { panic!() }
         match register {
             12 => self.flags = value as u32,
             13 => self.stack_pointer = value as u32,
