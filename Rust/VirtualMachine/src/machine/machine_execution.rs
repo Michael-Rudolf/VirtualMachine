@@ -57,6 +57,7 @@ impl Machine {
                 ticks = 5;
             }
             instruction::LOAD_BYTE_INSTRUCTION => { result = Some(self.memory[data_2 as usize] as i32); ticks = 5 },
+            instruction::STORE_BYTE_INSTRUCTION => { self.memory[data_2 as usize] = data_1 as u8; ticks = 5 },
             _=> result = None
         }
 

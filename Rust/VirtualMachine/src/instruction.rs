@@ -27,6 +27,8 @@ pub const JUMP_INSTRUCTION: u8 = 0b0110_0010;
 // Jumps to arg2 if arg1 is 0
 pub const JUMP_ZERO_INSTRUCTION: u8 = 0b0110_0011;
 pub const LOAD_BYTE_INSTRUCTION: u8 = 0b0110_0100;
+pub const STORE_BYTE_INSTRUCTION: u8 = 0b0111_0100;
+
 
 
 pub const FLAGS_REGISTER: u8 = 12 + 128;
@@ -91,6 +93,7 @@ impl Instruction{
                     "jmpz" => Some(Instruction::new(JUMP_ZERO_INSTRUCTION, arg1, arg2)),
                     "mov" => Some(Instruction::new(MOVE_INSTRUCTION, arg1, arg2)),
                     "ldb" => Some(Instruction::new(LOAD_BYTE_INSTRUCTION, arg1, arg2)),
+                    "stb" => Some(Instruction::new(STORE_BYTE_INSTRUCTION, arg1, arg2)),
                     _ => None
                 }
             }
@@ -119,6 +122,7 @@ impl Instruction{
             JUMP_INSTRUCTION => Some("jmp ".to_string() + arg_2_text),
             JUMP_ZERO_INSTRUCTION => Some("jmpz ".to_string() + arg_1_text + arg_2_text),
             LOAD_BYTE_INSTRUCTION => Some("ldb ".to_string() + arg_1_text + arg_2_text),
+            STORE_BYTE_INSTRUCTION => Some("stb ".to_string() + arg_1_text + arg_2_text),
             _ => None
         }
     }

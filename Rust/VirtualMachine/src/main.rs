@@ -3,7 +3,7 @@ mod machine;
 
 
 fn main() {
-    let code: [instruction::Instruction; 8] = [
+    let code: [instruction::Instruction; 9] = [
         //Loop
         instruction::Instruction::from_string("ldb R1 N100".to_string()).unwrap(),
         instruction::Instruction::from_string("add R1 N1".to_string()).unwrap(),
@@ -12,6 +12,7 @@ fn main() {
         instruction::Instruction::from_string("jmpz R0 N6".to_string()).unwrap(),
         instruction::Instruction::from_string("jmp N1".to_string()).unwrap(),
         instruction::Instruction::from_string("mov R3 N1".to_string()).unwrap(),
+        instruction::Instruction::from_string("stb R1 N100".to_string()).unwrap(),
         instruction::Instruction::from_string("halt".to_string()).unwrap(),
     ];
 
@@ -26,8 +27,7 @@ fn main() {
     machine.set_ram(100, vec![25]);
     machine.general_registers[1] = 5;
 
-    // Actually important stuff asdgvasödxlf
-    machine.execute(Some(5));
+    machine.execute(Some(10));
+
+    println!("{}", machine.memory[100]);
 }
-
-
