@@ -27,19 +27,6 @@ fn main() {
     let mut assembler = assembler::Assembler::new(asm);
     assembler.assemble();
 
-    /*let code: [instruction::Instruction; 9] = [
-        //Loop
-        instruction::Instruction::from_string("ldb R1 N100".to_string()).unwrap(),
-        instruction::Instruction::from_string("add R1 N1".to_string()).unwrap(),
-        instruction::Instruction::from_string("mov R0 R1".to_string()).unwrap(),
-        instruction::Instruction::from_string("sub R0 N30".to_string()).unwrap(),
-        instruction::Instruction::from_string("jmpz R0 N6".to_string()).unwrap(),
-        instruction::Instruction::from_string("jmp N1".to_string()).unwrap(),
-        instruction::Instruction::from_string("mov R3 N1".to_string()).unwrap(),
-        instruction::Instruction::from_string("stb R1 N100".to_string()).unwrap(),
-        instruction::Instruction::from_string("halt".to_string()).unwrap(),
-    ];*/
-
     let binary: Vec<u8> = assembler.output;
 
     println!("{:?}", binary);

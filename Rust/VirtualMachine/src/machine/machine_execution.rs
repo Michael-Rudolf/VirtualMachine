@@ -7,7 +7,7 @@ impl Machine {
 
     pub fn execute(&mut self, herz: Option<u32>){
         let start_time = Instant::now();
-        while self.flags & 0x4000_0000 <= 1  {
+        while self.flags & 0x4000_0000 < 1 && self.execution_pointer < 100 {
             self.execute_line(herz);
         }
         let duration = Instant::now().duration_since(start_time);
@@ -47,11 +47,11 @@ impl Machine {
             instruction::MOD_INSTRUCTION => { result = Some(data_1 % data_2); ticks = 51 },
             instruction::MOVE_INSTRUCTION => { result = Some(data_2); ticks = 3 },
             instruction::HALT_INSTRUCTION => { result = Some(data_1 | 0x4000_0000); ticks = 4 }, // Set halt bit
-            instruction::JUMP_INSTRUCTION => { result = Some(data_2 * 3); ticks = 4 }, // Load the second input to the register in (Exec ptr register) and multiply by 3 to get from the line to the actual memory address.
+            instruction::JUMP_INSTRUCTION => { result = Some(data_2); ticks = 4 }, // Load the second input to the register in (Exec ptr register) and multiply by 3 to get from the line to the actual memory address.
             instruction::JUMP_ZERO_INSTRUCTION => {
                 if data_1 == 0 {
-                    println!("JUMP_ZERO_INSTRUCTION to line {}", data_2 as u32);
-                    self.execution_pointer = (data_2 * 3) as u32;
+                    println!("JUMP_ZERO_INSTRUCTION to line {}", data_2 as u32 / 3);
+                    self.execution_pointer = (data_2) as u32;
                 }
                 ticks = 5;
             }

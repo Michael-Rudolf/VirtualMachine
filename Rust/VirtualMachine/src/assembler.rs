@@ -19,7 +19,7 @@ impl Assembler {
         for line in code_seperated_by_lines {
             if line.chars().nth(0).unwrap() != '#' && line != "" {
                 let part_without_comment = line.split("#").nth(0).unwrap();
-                lines_without_comments.push(part_without_comment.to_string());
+                lines_without_comments.push(part_without_comment.trim().to_string());
             }
         }
 
@@ -31,26 +31,31 @@ impl Assembler {
 
         for line in lines_without_comments {
             let characters: Vec<char> = line.chars().collect();
-            if *characters.last().unwrap() == ':' {
-                // This indicates a function afterwords, therefore, store the current line number
-                let name = characters[0..characters.len()-1].iter().collect::<String>();
-                replacements.push((name.clone(), format!("N{}", current_line)));
-                println!("pushing replacement {:?}", (name.clone(), format!("N{}", current_line)));
-                continue;
-            }else if *characters.first().unwrap() == '.' {
-                let selected_chars = &characters[1..characters.len()];
-                let selected_string = selected_chars.iter().collect::<String>();
-                let mut selected_string_split = selected_string.split(' ');
-                println!("{:?}", selected_string_split);
+            if let Some(&last_character) = characters.last(){
+                if last_character == ':' {
+                    // This indicates a function afterwords, therefore, store the current line number
+                    let name = characters[0..characters.len() - 1].iter().collect::<String>();
+                    replacements.push((name.clone(), format!("N{}", current_line * 3)));
+                    println!("pushing replacement {:?}", (name.clone(), format!("N{}", current_line * 3)));
+                    continue;
+                } else if let Some(&first_character) = characters.first(){
+                    if first_character == '.' {
+                        let selected_chars = &characters[1..characters.len()];
+                        let selected_string = selected_chars.iter().collect::<String>();
+                        let mut selected_string_split = selected_string.split(' ');
+                        println!("{:?}", selected_string_split);
 
-                let name = selected_string_split.next().unwrap();
-                let replacement = selected_string_split.next().unwrap();
-                replacements.push((name.to_string(), format!("{}", replacement.to_string())));
-                println!("pushing replacement {:?}", (name.to_string(), format!("{}", replacement.to_string())));
-                continue;
+                        let name = selected_string_split.next().unwrap();
+                        let replacement = selected_string_split.next().unwrap();
+                        replacements.push((name.to_string(), format!("{}", replacement.to_string())));
+                        println!("pushing replacement {:?}", (name.to_string(), format!("{}", replacement.to_string())));
+                        continue;
+                    }
+                }
+                current_line += 1;
+                println!("line {} at {}", line.to_string(), current_line);
+                lines_except_values.push(line.to_string());
             }
-            current_line += 1;
-            lines_except_values.push(line.to_string());
         }
 
         println!("replacements: {:?}", replacements);
@@ -79,16 +84,20 @@ impl Assembler {
 
 
         let mut binary: Vec<u8> = vec![];
+        let mut i: u32 = 0;
         for line in lines_except_values.clone() {
-            println!("{}", line);
-            let mut instruction = Instruction::from_string(line).unwrap().to_binary();
-            binary.append(&mut instruction);
+            i += 1;
+            if let Some(instruction) = Instruction::from_string(line.clone()){
+                let mut binary_instruction = instruction.to_binary();
+                binary.append(&mut binary_instruction);
+            }else{
+                panic!("Couldn't decode line {} at {}.", line.clone().to_string(), i)
+            }
         }
 
         self.output = binary;
 
         println!("replacements: {:?}", replacements);
         println!("code: {:?}", lines_except_values.join("\n"));
-
     }
 }
