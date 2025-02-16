@@ -50,7 +50,6 @@ impl Machine {
             instruction::JUMP_INSTRUCTION => { result = Some(data_2); ticks = 4 }, // Load the second input to the register in (Exec ptr register) and multiply by 3 to get from the line to the actual memory address.
             instruction::JUMP_ZERO_INSTRUCTION => {
                 if data_1 == 0 {
-                    println!("JUMP_ZERO_INSTRUCTION to line {}", data_2 as u32 / 3);
                     self.execution_pointer = (data_2) as u32;
                 }
                 ticks = 5;

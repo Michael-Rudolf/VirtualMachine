@@ -6,6 +6,8 @@ mod instruction;
 mod machine;
 mod assembler;
 
+const HERZ: u16 = 500;
+
 fn main() {
     let path = FileDialog::new().pick_file().unwrap();
 
@@ -13,15 +15,15 @@ fn main() {
 
     // Open the path in read-only mode, returns `io::Result<File>`
     let mut file = match File::open(&path) {
-        Err(why) => panic!("couldn't open {}: {}", display, why),
+        Err(reason) => panic!("Couldn't open {}: {}", display, reason),
         Ok(file) => file,
     };
 
     // Read the file contents into a string, returns `io::Result<usize>`
     let mut asm = String::new();
     match file.read_to_string(&mut asm) {
-        Err(why) => panic!("couldn't read {}: {}", display, why),
-        Ok(_) => print!("{} contains:\n{}", display, asm),
+        Err(reason) => panic!("Couldn't read {}: {}", display, reason),
+        Ok(_) => {/*Do nothing*/},
     }
 
     let mut assembler = assembler::Assembler::new(asm);
@@ -29,14 +31,10 @@ fn main() {
 
     let binary: Vec<u8> = assembler.output;
 
-    println!("{:?}", binary);
-
     let mut machine = machine::machine::Machine::new();
     machine.set_ram(0, binary);
-    machine.set_ram(100, vec![25]);
     machine.general_registers[1] = 5;
 
-    machine.execute(Some(10));
 
-    println!("{}", machine.memory[100]);
+    machine.execute(Some(HERZ as u32));
 }
