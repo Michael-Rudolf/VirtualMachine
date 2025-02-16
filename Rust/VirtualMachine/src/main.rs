@@ -19,20 +19,13 @@ fn main() {
         Ok(file) => file,
     };
 
-    // Read the file contents into a string, returns `io::Result<usize>`
-    let mut asm = String::new();
-    match file.read_to_string(&mut asm) {
-        Err(reason) => panic!("Couldn't read {}: {}", display, reason),
-        Ok(_) => {/*Do nothing*/},
-    }
-
-    let mut assembler = assembler::Assembler::new(asm);
-    assembler.assemble();
-
-    let binary: Vec<u8> = assembler.output;
+    let mut buffer = Vec::<u8>::new();
+    _ = file.read_to_end(&mut buffer);
+    println!("{:?}", buffer);
 
     let mut machine = machine::machine::Machine::new();
-    machine.set_ram(0, binary);
+
+    machine.set_ram(0, buffer);
     machine.general_registers[1] = 5;
 
 
